@@ -1,10 +1,13 @@
-./run_mesh_mt < runcase/mesh_wh3_n3_r4_mode0
-./run_mesh_mt < runcase/mesh_wh3_n3_r4_mode8
-./run_mesh_mt < runcase/mesh_wh3_n3_r4_mode25
-./run_mesh_mt < runcase/mesh_wh3_n3_r4_mode26
-./run_mesh_mt < runcase/mesh_wh3_n3_r4_mode27
-./run_mesh_mt < runcase/mesh_wh4_n4_r6_mode0
-./run_mesh_mt < runcase/mesh_wh4_n4_r6_mode8
-./run_mesh_mt < runcase/mesh_wh4_n4_r6_mode25
-./run_mesh_mt < runcase/mesh_wh4_n4_r6_mode26
-./run_mesh_mt < runcase/mesh_wh4_n4_r6_mode27
+W=4
+H=4
+D=2
+R=3
+N=2
+
+BRL=001021
+
+python -u search.py --arch='mesh' --w=${W} --h=${H} --d=${D} --r=${R} --n=${N} --brl=${BRL} --bab --opt
+# python -u search.py --arch='cube' --w=${W} --h=${H} --d=${D} --r=${R} --n=${N} --brl=${BRL} --mp --pn=10
+# python -u search.py --arch='mesh' --w=${W} --h=${H} --r=${R} --n=${N} --brl=${BRL} --mp --pn=10 --bab
+# python -u search.py --arch='mesh' --w=${W} --h=${H} --r=${R} --n=${N} --brl=${BRL} --mp --pn=10
+# python -u search.py --arch='mesh' --w=${W} --h=${H} --r=${R} --n=${N} --brl=${BRL} --opt --popt --bab
