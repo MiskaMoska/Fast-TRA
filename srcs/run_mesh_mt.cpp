@@ -19,7 +19,8 @@ int _H_ = 0;
 int _N_ = 0;
 int _R_ = 0;
 int _MODE_ = 0;
-int _TN_ = 0; //thread number
+bool _GO_ = 0; //NOTICE:global searching doesn't support checkpoint!!
+int _TN_ = 1; //thread number
 bool _RESUME_ = false; //load checkpiont and resume searching
 /* user defined hyper parameters end */
 
@@ -29,6 +30,8 @@ vector<vector<int>> all_placements;
 string output_path,file_name,ckpt_name;
 mutex fout_mtx;
 ofstream fout,ckptout;
+unsigned long start_time;
+struct Results global_res;
 
 void runMeshThread(int mode,int w,int h,int r,int idx,int ts){
     MeshCdg G(w,h);
@@ -37,16 +40,25 @@ void runMeshThread(int mode,int w,int h,int r,int idx,int ts){
     struct Results res;
     struct MeshCode code;
 
+    if(_GO_){
+        res.ofv = global_res.ofv;
+    }
+
     auto st = chrono::steady_clock::now();
     brl = all_placements[idx];
     G.setBoundRouters(brl);
     pt.clear();bt.clear();
     G.initBoundTurns(bt);
-    if(mode & 8){
-        if(mode & 16) sortAllTurns(G,bt,mode & 4,mode & 3);
-        setTurnsBkwd(G,bt,pt,(int)(bt.size()>>1),0,0,r,res);
+    if(mode & 32){
+        setTurnsDirect(G,brl,res);
     }
-    else setTurns(G,bt,pt,0,(int)(bt.size()>>1)-1,0,r,res);
+    else{
+        if(mode & 8){
+            if(mode & 16) sortAllTurns(G,bt,mode & 4,mode & 3);
+            setTurnsBkwd(G,bt,pt,(int)(bt.size()>>1),0,0,r,res);
+        }
+        else setTurns(G,bt,pt,0,(int)(bt.size()>>1)-1,0,r,res);
+    }
     auto dt = chrono::steady_clock::now();
 
     //output data
@@ -56,7 +68,7 @@ void runMeshThread(int mode,int w,int h,int r,int idx,int ts){
     fout.width(20);fout << idx+1;
     fout.width(20);fout << res.ofv;
     fout.width(20);fout << res.itc;
-    fout.width(20);fout << chrono::duration_cast<chrono::milliseconds>(dt-st).count();
+    fout.width(20);fout << (_GO_ ? getTimeData() - start_time : chrono::duration_cast<chrono::milliseconds>(dt-st).count());
     for(unsigned int j=0;j<brl.size();j++){
         fout.width(20);
         fout << "(" + to_string(brl[j]%h) + "," + to_string(brl[j]/h)  + "),";
@@ -70,6 +82,11 @@ void runMeshThread(int mode,int w,int h,int r,int idx,int ts){
     fout << endl;
     cout << idx+1 << "/" << ts << " done with ofv: " << res.ofv << endl;
     ckptout << to_string(idx) << endl;
+
+    if(_GO_){
+        global_res.ofv = res.ofv;
+    }
+
     fout_mtx.unlock();
 }
 
@@ -83,6 +100,7 @@ void runMeshThread(int mode,int w,int h,int r,int idx,int ts){
         29  :backward searching with backward 1/AD presorting
         30  :backward searching with backward AR/1 presorting
         31  :backward searching with backward AR/AD presorting
+        32  :Direct-TRA method
 
     w:network width
     h:network height
@@ -165,12 +183,16 @@ int main(){
     cin >> _N_;
     cin >> _R_;
     cin >> _MODE_;
+    cin >> _GO_;
     cin >> _TN_;
     cin >> _RESUME_;
+
+    start_time = getTimeData();
+    // cout << start_time << endl;
     output_path = "./output_mesh_w" + to_string(_W_) + "_h" + 
                             to_string(_H_) + "_n" + to_string(_N_);
-    file_name = output_path + "/mt_mode" + to_string(_MODE_) + "_r" + to_string(_R_) + ".txt";
-    ckpt_name = "./checkpoints/mesh_w" + to_string(_W_) + "_h" + to_string(_H_) + "_n" + to_string(_N_) +
+    file_name = output_path + "/mt_go" + to_string(_GO_) + "_mode" + to_string(_MODE_) + "_r" + to_string(_R_) + ".txt";
+    ckpt_name = "./checkpoints/mesh_go" + to_string(_GO_) + "_w" + to_string(_W_) + "_h" + to_string(_H_) + "_n" + to_string(_N_) +
                     "_mode" + to_string(_MODE_) + "_r" + to_string(_R_) + ".txt";
 
     system(("mkdir -p " + output_path).c_str());

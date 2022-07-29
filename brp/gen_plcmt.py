@@ -3,10 +3,10 @@ from copy import deepcopy
 import itertools as it
 
 os.chdir("./brp")
-_W_H_ = 8 #network width and height
-_N_ = 8 #number of boundary routers
-_K_ = 3 #neighbor-mask threshold
-_PWF_ = 0 #powerful mask or weak mask
+_W_H_ = 4 #network width and height
+_N_ = 3 #number of boundary routers
+_K_ = 0 #neighbor-mask threshold
+_PWF_ = 0 #strong mask or weak mask
 output_file = "plcmt_2d_wh"+str(_W_H_)+"_n"+str(_N_)+".txt"
 
 cnt = 0

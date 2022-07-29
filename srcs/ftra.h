@@ -94,6 +94,7 @@ bool compare(struct Grade &a,struct Grade &b);
 void seekToLine(ifstream &in, int line);
 int getFileLen(ifstream &in);
 bool isInVector(int a,vector<int> &v);
+unsigned long getTimeData();
 
 /*---------------------------run_mesh_st.cpp-----------------------------*/
 void runMeshSingleThread(int mode,bool go,int w,int h,int n,int r);

@@ -10,6 +10,7 @@
 #include <atomic>
 #include <unistd.h>
 #include <chrono>
+#include <bits/stdc++.h> 
 using namespace std;
 
 // int L=55;
@@ -46,6 +47,22 @@ void work(int a,int b){
     }
 }
 
+int main() 
+{ 
+    time_t time_ptr; 
+    time_ptr = time(NULL); 
+
+    // Get the localtime 
+    tm* tm_local = localtime(&time_ptr); 
+
+    cout << "Current local time is = "
+        << tm_local->tm_hour << ":"
+        << tm_local->tm_min << ":"
+        << tm_local->tm_sec; 
+
+    return 0; 
+}
+
 //SetThreadAffinityMask
 // int main(){
 //     vector<thread> t_list;
@@ -63,10 +80,10 @@ void work(int a,int b){
 //     return 0;
 // }
 
-int main(){
-    cout << thread::hardware_concurrency() << endl;
-    return 0;
-}
+// int main(){
+//     cout << thread::hardware_concurrency() << endl;
+//     return 0;
+// }
 
 void seek_to_line(ifstream &in, int line){
     string str;

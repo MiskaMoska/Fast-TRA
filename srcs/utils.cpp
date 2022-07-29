@@ -4,6 +4,7 @@
 #include <vector>
 #include <ctime>
 #include <algorithm>
+#include <bits/stdc++.h> 
 #include "channel_name.h"
 #include "ftra.h"
 using namespace std;
@@ -90,4 +91,13 @@ bool isInVector(int a,vector<int> &v){
         if(*it==a) return true;
     }
     return false;
+}
+
+unsigned long getTimeData(){
+    unsigned long t;
+    time_t time_ptr; 
+    time_ptr = time(NULL);
+    tm* tm_local = localtime(&time_ptr);
+    t = (unsigned long)(tm_local->tm_hour * 3600 + tm_local->tm_min * 60 + tm_local->tm_sec);
+    return t;
 }
