@@ -29,7 +29,7 @@ This project has 2 branches: cpp and python, each of which is implemented by the
    ```
 
    to generate the executable files, which are located at the project root directory.
-2. Modify the `gen_plcmt.py` as you need and run
+2. Modify the `./brp/gen_plcmt.py` as you need and run
 
    ```shell
    python3 ./brp/gen_plcmt.py
